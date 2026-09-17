@@ -253,12 +253,12 @@ export function AppShell({
         </button>
       </div>
 
-      <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-4 p-4 overflow-y-auto md:overflow-hidden">
+      <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-4 p-4 overflow-hidden">
         <section
           className={`flex flex-col min-h-0 gap-3 ${tab === "recorrido" ? "hidden md:flex" : "flex"}`}
           aria-label="Conversacion"
         >
-          <div className="tarjeta flex-1 min-h-0 md:overflow-y-auto flex flex-col gap-3 p-4">
+          <div className="tarjeta flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 p-4">
             {messages.length === 0 && (
               <div className="flex flex-col gap-3">
                 <p className="text-sm text-tinta/70 max-w-[70ch]">
@@ -346,7 +346,7 @@ export function AppShell({
         </section>
 
         <section
-          className={`flex flex-col min-h-0 gap-4 md:overflow-y-auto ${tab === "conversacion" ? "hidden md:flex" : "flex"}`}
+          className={`flex flex-col min-h-0 gap-4 overflow-y-auto ${tab === "conversacion" ? "hidden md:flex" : "flex"}`}
           aria-label="Recorrido de tu consulta"
         >
           {estimacion && estimacion.ok && (

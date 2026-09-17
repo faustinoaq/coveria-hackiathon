@@ -1,8 +1,5 @@
-import { randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
-import { promisify } from "node:util";
+import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { SignJWT, jwtVerify } from "jose";
-
-const scrypt = promisify(scryptCb);
 
 const SCRYPT_N = 16384;
 const SCRYPT_R = 8;
@@ -11,11 +8,11 @@ const KEY_LEN = 64;
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);
-  const derived = (await scrypt(password, salt, KEY_LEN, {
+  const derived = scryptSync(password, salt, KEY_LEN, {
     N: SCRYPT_N,
     r: SCRYPT_R,
     p: SCRYPT_P,
-  })) as Buffer;
+  });
   return `scrypt$${SCRYPT_N}$${SCRYPT_R}$${SCRYPT_P}$${salt.toString("base64")}$${derived.toString("base64")}`;
 }
 
@@ -34,11 +31,7 @@ export async function verifyPassword(
   if (!Number.isFinite(N) || !Number.isFinite(r) || !Number.isFinite(p)) {
     return false;
   }
-  const derived = (await scrypt(password, salt, expected.length, {
-    N,
-    r,
-    p,
-  })) as Buffer;
+  const derived = scryptSync(password, salt, expected.length, { N, r, p });
   if (derived.length !== expected.length) return false;
   return timingSafeEqual(derived, expected);
 }

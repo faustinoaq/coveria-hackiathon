@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: ".env.local" });
 import { hashPassword } from "../lib/auth";
 
 async function main() {

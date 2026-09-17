@@ -165,6 +165,14 @@ export function AppShell({
   // guardados en localStorage (nunca en el servidor). Se difiere a un
   // microtask porque setInput/setMessages son setState llamados desde el
   // cuerpo del efecto, mismo patron usado para el historial.
+  //
+  // restauradoRef existe por una condicion de carrera real: en el primer
+  // render `messages` todavia es `[]` (useChat no se ha restaurado). Sin
+  // este guard, el efecto de "persistir" de abajo corre en el mismo commit
+  // con `messages = []` y borra lo guardado en localStorage ANTES de que
+  // este microtask llegue a leerlo (por eso recargar borraba la
+  // conversacion incluso con la persistencia ya escrita).
+  const restauradoRef = useRef(false);
   useEffect(() => {
     let cancelado = false;
     queueMicrotask(() => {
@@ -173,6 +181,7 @@ export function AppShell({
       if (borrador) setInput(borrador);
       const chatGuardado = leerChatGuardado();
       if (chatGuardado.length > 0) setMessages(chatGuardado);
+      restauradoRef.current = true;
     });
     return () => {
       cancelado = true;
@@ -181,8 +190,10 @@ export function AppShell({
   }, []);
 
   // Persiste la sesion de chat en cada cambio: no es setState (es escribir a
-  // localStorage), asi que no aplica react-hooks/set-state-in-effect.
+  // localStorage), asi que no aplica react-hooks/set-state-in-effect. Se
+  // ignora hasta que la restauracion de arriba haya corrido (ver nota).
   useEffect(() => {
+    if (!restauradoRef.current) return;
     guardarChat(messages);
   }, [messages]);
 

@@ -59,7 +59,13 @@ export async function POST(request: Request) {
     return NextResponse.json(error("E204", "Solicitud invalida"), { status: 400 });
   }
 
-  const mensajes = parsed.data.messages.slice(-10) as UIMessage[];
+  // 10 mensajes (5 turnos) cortaba contexto real en conversaciones un poco
+  // largas (p. ej. el paciente describe un sintoma y lo referencia varios
+  // turnos despues: "el mismo que te dije antes"). 40 mensajes es generoso
+  // para el tamano tipico de esta conversacion y el modelo tiene contexto de
+  // sobra; sigue existiendo como limite duro para no enviar una conversacion
+  // sin fin completa en cada request.
+  const mensajes = parsed.data.messages.slice(-40) as UIMessage[];
   const textoUsuario = extraerTextoUsuario(mensajes);
   const nivelUrgencia = detectarUrgencia(textoUsuario);
   const promptSistema = construirPromptSistema({

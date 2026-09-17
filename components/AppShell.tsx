@@ -401,13 +401,13 @@ export function AppShell({
                 guardarBorrador(e.target.value);
               }}
               placeholder="Describe tu sintoma"
-              className="flex-1 border border-tinta/15 bg-superficie rounded-xl px-3.5 py-2.5 transition-shadow focus:outline-none focus:ring-2 focus:ring-linea-agente focus:ring-offset-2 focus:ring-offset-sala disabled:opacity-60"
+              className="flex-1 min-w-0 border border-tinta/15 bg-superficie rounded-xl px-3.5 py-2.5 transition-shadow focus:outline-none focus:ring-2 focus:ring-linea-agente focus:ring-offset-2 focus:ring-offset-sala disabled:opacity-60"
               disabled={status !== "ready"}
             />
             <button
               type="submit"
               disabled={status !== "ready"}
-              className="bg-linea-agente text-white rounded-xl px-4 py-2.5 font-bold shadow-[0_10px_24px_-10px_rgba(47,111,222,0.65)] transition-all hover:bg-linea-agente-fuerte active:translate-y-px disabled:opacity-60 disabled:shadow-none"
+              className="flex-shrink-0 bg-linea-agente text-white rounded-xl px-4 py-2.5 font-bold shadow-[0_10px_24px_-10px_rgba(47,111,222,0.65)] transition-all hover:bg-linea-agente-fuerte active:translate-y-px disabled:opacity-60 disabled:shadow-none"
             >
               Consultar
             </button>

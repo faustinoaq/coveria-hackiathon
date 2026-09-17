@@ -313,7 +313,7 @@ export function AppShell({
 
       <div className="flex-1 min-h-0 grid md:grid-cols-2 gap-4 p-4 overflow-hidden">
         <section
-          className={`flex flex-col min-h-0 gap-3 ${tab === "recorrido" ? "hidden md:flex" : "flex"}`}
+          className={`flex flex-col min-h-0 min-w-0 gap-3 ${tab === "recorrido" ? "hidden md:flex" : "flex"}`}
           aria-label="Conversacion"
         >
           <div ref={mensajesRef} className="tarjeta flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 p-4">
@@ -425,7 +425,7 @@ export function AppShell({
         </section>
 
         <section
-          className={`flex flex-col min-h-0 gap-4 overflow-y-auto ${tab === "conversacion" ? "hidden md:flex" : "flex"}`}
+          className={`flex flex-col min-h-0 min-w-0 gap-4 overflow-y-auto ${tab === "conversacion" ? "hidden md:flex" : "flex"}`}
           aria-label="Detalles de tu consulta"
         >
           {estimacion && estimacion.ok && (

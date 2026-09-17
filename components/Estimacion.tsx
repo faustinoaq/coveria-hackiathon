@@ -47,7 +47,10 @@ export function Estimacion({ cotizacion }: { cotizacion: CotizacionOk }) {
   if (!principal) return null;
 
   return (
-    <section className="tarjeta flex flex-col gap-5 p-5 sm:p-6" aria-label="Detalles de tu estimacion">
+    <section
+      className="tarjeta flex flex-col min-w-0 gap-5 p-5 sm:p-6"
+      aria-label="Detalles de tu estimacion"
+    >
       <div>
         <p className="text-xs font-bold tracking-wide uppercase text-tinta/45 mb-1.5">
           Detalles de tu estimacion
@@ -65,7 +68,7 @@ export function Estimacion({ cotizacion }: { cotizacion: CotizacionOk }) {
           red.
         </p>
       )}
-      <div className="overflow-x-auto -mx-1">
+      <div className="overflow-x-auto min-w-0 -mx-1">
         <table className="w-full text-sm border-collapse min-w-[480px]">
           <caption className="sr-only">
             Hospitales comparados para {cotizacion.especialidad}

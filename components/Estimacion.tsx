@@ -90,48 +90,54 @@ export function Estimacion({ cotizacion }: { cotizacion: CotizacionOk }) {
             </tr>
           </thead>
           <tbody>
-            {cotizacion.hospitales.map((h, i) => (
-              <Fragment key={h.hospital_id}>
-                <tr
-                  className={`align-top border-t border-tinta/8 ${i === 0 ? "bg-linea-agente/5" : ""}`}
-                >
-                  <td
-                    className={`py-2.5 px-1 ${i === 0 ? "border-l-2 border-linea-agente pl-2.5 font-bold" : ""}`}
+            {cotizacion.hospitales.map((h, i) => {
+              const abiertoAqui = abierto === h.hospital_id;
+              return (
+                <Fragment key={h.hospital_id}>
+                  <tr
+                    className={`align-top border-t border-tinta/8 cursor-pointer transition-colors hover:bg-linea-agente/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente focus-visible:ring-inset ${i === 0 ? "bg-linea-agente/5" : ""}`}
+                    onClick={() => setAbierto(abiertoAqui ? null : h.hospital_id)}
+                    onKeyDown={(e) => {
+                      if (e.key !== "Enter" && e.key !== " ") return;
+                      e.preventDefault();
+                      setAbierto(abiertoAqui ? null : h.hospital_id);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={abiertoAqui}
+                    aria-label={`Ver desglose de ${h.nombre}`}
                   >
-                    {h.nombre}
-                    {i === 0 && (
-                      <span className="ml-2 inline-block rounded-full bg-linea-agente/15 text-linea-agente-fuerte text-xs font-bold px-2 py-0.5 align-middle">
-                        Mas economico
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-2.5 px-1 text-tinta/70">{h.ciudad}</td>
-                  <td className="py-2.5 px-1 tabular-nums text-tinta/70">{h.rating.toFixed(1)}</td>
-                  <td className="py-2.5 px-1 tabular-nums text-tinta/70">{moneda(h.tarifa)}</td>
-                  <td className="py-2.5 px-1 tabular-nums font-bold">
-                    {moneda(h.pago_paciente)}{" "}
-                    <button
-                      type="button"
-                      className="underline decoration-tinta/25 underline-offset-2 text-xs font-normal text-tinta/60 transition-colors hover:text-tinta focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente focus-visible:ring-offset-2 rounded"
-                      onClick={() =>
-                        setAbierto(abierto === h.hospital_id ? null : h.hospital_id)
-                      }
-                      aria-expanded={abierto === h.hospital_id}
+                    <td
+                      className={`py-2.5 px-1 ${i === 0 ? "border-l-2 border-linea-agente pl-2.5 font-bold" : ""}`}
                     >
-                      {abierto === h.hospital_id ? "ocultar" : "desglose"}
-                    </button>
-                  </td>
-                </tr>
-                {abierto === h.hospital_id && (
-                  <tr className="bg-sala">
-                    <td colSpan={5} className="py-2 px-2.5 text-xs text-tinta/70">
-                      Deducible aplicado {moneda(h.deducible_aplicado)} + coaseguro{" "}
-                      {moneda(h.coaseguro_paciente)} + copago {moneda(h.copago)}
+                      {h.nombre}
+                      {i === 0 && (
+                        <span className="ml-2 inline-block rounded-full bg-linea-agente/15 text-linea-agente-fuerte text-xs font-bold px-2 py-0.5 align-middle">
+                          Mas economico
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-1 text-tinta/70">{h.ciudad}</td>
+                    <td className="py-2.5 px-1 tabular-nums text-tinta/70">{h.rating.toFixed(1)}</td>
+                    <td className="py-2.5 px-1 tabular-nums text-tinta/70">{moneda(h.tarifa)}</td>
+                    <td className="py-2.5 px-1 tabular-nums font-bold">
+                      {moneda(h.pago_paciente)}{" "}
+                      <span aria-hidden className="text-tinta/40 text-[10px]">
+                        {abiertoAqui ? "▲" : "▼"}
+                      </span>
                     </td>
                   </tr>
-                )}
-              </Fragment>
-            ))}
+                  {abiertoAqui && (
+                    <tr className="bg-sala">
+                      <td colSpan={5} className="py-2 px-2.5 text-xs text-tinta/70">
+                        Deducible aplicado {moneda(h.deducible_aplicado)} + coaseguro{" "}
+                        {moneda(h.coaseguro_paciente)} + copago {moneda(h.copago)}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -49,4 +49,14 @@ describe("aplicarGuardaMontos", () => {
     const texto = "El copago es de $15.00.";
     expect(aplicarGuardaMontos(texto, [])).toBe(FRASE_SIN_CIFRAS);
   });
+
+  it("reemplaza el texto si el modelo copia el centavo crudo sin formatear (bug real reportado)", () => {
+    const texto = "El pago del paciente es 4200 y el de la aseguradora es 4800.";
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(FRASE_SIN_CIFRAS);
+  });
+
+  it("deja pasar numeros de 1-2 digitos que no son montos (p. ej. porcentajes)", () => {
+    const texto = "La cobertura es del 70 por ciento.";
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
+  });
 });

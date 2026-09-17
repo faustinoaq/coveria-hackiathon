@@ -13,7 +13,7 @@ import { error } from "@/lib/errores";
 import { detectarUrgencia } from "@/lib/urgencias";
 import { construirHerramientas, construirPromptSistema } from "@/lib/agente";
 import { obtenerModelo } from "@/lib/modelo";
-import { crearRun, crearRunId, cerrarRun, registrarEvento } from "@/lib/eventos";
+import { crearRun, crearRunId, cerrarRun, registrarEvento, type TipoEvento } from "@/lib/eventos";
 import { aplicarGuardaMontos } from "@/lib/guarda-montos";
 import { obtenerIp, verificarLimite } from "@/lib/limites";
 import type { CotizacionOk } from "@/lib/herramientas/cotizar";
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   let seq = 0;
   async function registrar(
-    tipo: "urgencia" | "herramienta" | "error",
+    tipo: TipoEvento,
     nombre: string,
     estado: string,
     ms?: number,
@@ -168,6 +168,10 @@ export async function POST(request: Request) {
       }
 
       const textoValidado = aplicarGuardaMontos(textoFinal || FRASE_RESPALDO, cotizaciones);
+      // Se guarda la respuesta de CoverIA (no el texto libre del paciente,
+      // ver la nota de B.10 en lib/eventos.ts) para poder mostrarla en
+      // /runs/[id] como el "chat" de la consulta.
+      await registrar("llm", "respuesta", "ok", undefined, undefined, { texto: textoValidado });
 
       writer.write({ type: "text-start", id: "t1" });
       writer.write({ type: "text-delta", id: "t1", delta: textoValidado });

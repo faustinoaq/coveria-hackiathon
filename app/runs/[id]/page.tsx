@@ -35,8 +35,15 @@ export default async function RunPage({
     .map((p) => p.salida as CotizacionOk)
     .pop();
 
+  // Respuesta de CoverIA guardada en el turno (no el texto libre del
+  // paciente, ver la nota de B.10 en lib/eventos.ts).
+  const respuesta = run.eventos
+    .filter((e) => e.tipo === "llm" && e.nombre === "respuesta")
+    .map((e) => (e.payload as { texto?: string } | null)?.texto)
+    .find((t): t is string => Boolean(t));
+
   return (
-    <main className="flex-1 p-4 md:p-8 flex flex-col gap-4 max-w-3xl mx-auto w-full">
+    <main className="flex-1 p-4 md:p-8 flex flex-col gap-4 max-w-3xl mx-auto w-full overflow-y-auto">
       <div>
         <p className="text-xs font-bold tracking-wide uppercase text-tinta/45 mb-1">
           Detalle de la consulta
@@ -49,14 +56,34 @@ export default async function RunPage({
           </span>
         )}
       </div>
-      <div className="tarjeta p-4">
-        <h2 className="text-xs font-bold uppercase tracking-wide text-tinta/45 mb-2">
-          Recorrido
-        </h2>
-        <Recorrido pasos={pasos} />
-      </div>
-      <Pasos pasos={pasos} verDetalles />
+
       {ultimaCotizacion?.ok && <Estimacion cotizacion={ultimaCotizacion} />}
+
+      {respuesta && (
+        <section className="tarjeta p-4" aria-label="Respuesta de CoverIA">
+          <h2 className="text-xs font-bold uppercase tracking-wide text-tinta/45 mb-2">
+            Respuesta de CoverIA
+          </h2>
+          <div className="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm bg-sala shadow-[inset_0_0_0_1px_rgba(22,56,74,0.06)] whitespace-pre-wrap">
+            {respuesta}
+          </div>
+        </section>
+      )}
+
+      <details className="tarjeta p-4 group">
+        <summary className="text-xs font-bold uppercase tracking-wide text-tinta/45 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente rounded">
+          Datos tecnicos
+        </summary>
+        <div className="flex flex-col gap-4 mt-4">
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-wide text-tinta/45 mb-2">
+              Recorrido
+            </h3>
+            <Recorrido pasos={pasos} />
+          </div>
+          <Pasos pasos={pasos} verDetalles />
+        </div>
+      </details>
     </main>
   );
 }

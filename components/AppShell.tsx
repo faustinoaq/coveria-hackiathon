@@ -279,24 +279,39 @@ export function AppShell({
                 </div>
               </div>
             )}
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm ${
-                  m.role === "user"
-                    ? "self-end bg-linea-agente text-white"
-                    : "self-start bg-sala shadow-[inset_0_0_0_1px_rgba(22,56,74,0.06)]"
-                }`}
-              >
-                {m.parts
-                  .filter((p): p is Extract<typeof p, { type: "text" }> => p.type === "text")
-                  .map((p, i) => (
-                    <p key={i} className="whitespace-pre-wrap">
-                      {p.text}
-                    </p>
-                  ))}
-              </div>
-            ))}
+            {messages.map((m) => {
+              const textos = m.parts.filter(
+                (p): p is Extract<typeof p, { type: "text" }> => p.type === "text",
+              );
+              const estimacionMsg = m.parts.find(
+                (p): p is Extract<typeof p, { type: "data-estimacion" }> =>
+                  p.type === "data-estimacion",
+              );
+              return (
+                <div key={m.id} className="flex flex-col gap-2">
+                  {textos.length > 0 && (
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm ${
+                        m.role === "user"
+                          ? "self-end bg-linea-agente text-white"
+                          : "self-start bg-sala shadow-[inset_0_0_0_1px_rgba(22,56,74,0.06)]"
+                      }`}
+                    >
+                      {textos.map((p, i) => (
+                        <p key={i} className="whitespace-pre-wrap">
+                          {p.text}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  {estimacionMsg && (
+                    <div className="self-start w-full max-w-[92%]">
+                      <Estimacion cotizacion={estimacionMsg.data} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             {(status === "submitted" || status === "streaming") && (
               <p className="flex items-center gap-1.5 text-xs text-tinta/60 self-start">
                 <span aria-hidden className="flex gap-0.5">

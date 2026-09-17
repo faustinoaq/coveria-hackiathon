@@ -1,0 +1,17 @@
+{"texto": "Tengo un dolor fuerte en el pecho que se me va al brazo izquierdo", "nivel_esperado": "urgente"}
+{"texto": "Siento una opresion muy fuerte en el pecho desde hace 20 minutos", "nivel_esperado": "urgente"}
+{"texto": "No puedo respirar bien, siento que me ahogo", "nivel_esperado": "urgente"}
+{"texto": "Mi papa se desmayo y no reacciona", "nivel_esperado": "urgente"}
+{"texto": "Perdio el conocimiento en la calle hace unos minutos", "nivel_esperado": "urgente"}
+{"texto": "Tiene un sangrado abundante que no para desde el accidente", "nivel_esperado": "urgente"}
+{"texto": "Se le durmio todo un lado del cuerpo y se le cayo la cara", "nivel_esperado": "urgente"}
+{"texto": "Esta teniendo una convulsion ahora mismo", "nivel_esperado": "urgente"}
+{"texto": "Tengo pensamientos de hacerme dano y no se que hacer", "nivel_esperado": "crisis"}
+{"texto": "Ya no quiero seguir viviendo, siento que no vale la pena", "nivel_esperado": "crisis"}
+{"texto": "Tengo ganas de morirme desde hace dias", "nivel_esperado": "crisis"}
+{"texto": "Me duele un poco la rodilla al subir escaleras", "nivel_esperado": "ninguna"}
+{"texto": "Tengo fiebre y tos desde ayer en David", "nivel_esperado": "ninguna"}
+{"texto": "Quiero un chequeo general de rutina", "nivel_esperado": "ninguna"}
+{"texto": "Tengo picazon en la piel desde hace unos dias", "nivel_esperado": "ninguna"}
+{"texto": "Necesito una consulta de control prenatal", "nivel_esperado": "ninguna"}
+{"texto": "Tengo dolor de garganta y un poco de tos", "nivel_esperado": "ninguna"}

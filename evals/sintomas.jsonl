@@ -1,0 +1,30 @@
+{"texto": "Tengo gripe y estornudo mucho desde ayer", "especialidad_esperada": "MEDICINA_GENERAL"}
+{"texto": "Quiero un chequeo de rutina, me siento bien pero hace tiempo no me reviso", "especialidad_esperada": "MEDICINA_GENERAL"}
+{"texto": "Mi bebe tiene fiebre desde anoche", "especialidad_esperada": "PEDIATRIA"}
+{"texto": "Mi hijo tiene vomito y diarrea desde esta manana", "especialidad_esperada": "PEDIATRIA"}
+{"texto": "Estoy embarazada y tengo dolor en el vientre", "especialidad_esperada": "GINECOLOGIA"}
+{"texto": "Necesito mi control prenatal de este mes", "especialidad_esperada": "GINECOLOGIA"}
+{"texto": "Siento el corazon acelerado desde hace un rato", "especialidad_esperada": "CARDIOLOGIA"}
+{"texto": "Me detectaron presion alta y quiero un control", "especialidad_esperada": "CARDIOLOGIA"}
+{"texto": "Tengo manchas rojas en la piel que pican mucho", "especialidad_esperada": "DERMATOLOGIA"}
+{"texto": "Me sale mucho acne en la cara desde hace meses", "especialidad_esperada": "DERMATOLOGIA"}
+{"texto": "Me duele la rodilla al subir escaleras", "especialidad_esperada": "ORTOPEDIA"}
+{"texto": "Me torci el tobillo jugando futbol y esta hinchado", "especialidad_esperada": "ORTOPEDIA"}
+{"texto": "Tengo migranas muy fuertes y frecuentes con luces", "especialidad_esperada": "NEUROLOGIA"}
+{"texto": "Siento mareo y perdida de equilibrio seguido", "especialidad_esperada": "NEUROLOGIA"}
+{"texto": "Tengo mucha acidez y reflujo despues de comer", "especialidad_esperada": "GASTROENTEROLOGIA"}
+{"texto": "Tengo diarrea persistente desde hace varios dias", "especialidad_esperada": "GASTROENTEROLOGIA"}
+{"texto": "Siento ansiedad y no puedo dormir por preocupacion", "especialidad_esperada": "PSICOLOGIA"}
+{"texto": "Me siento triste y sin ganas de nada desde hace semanas", "especialidad_esperada": "PSICOLOGIA"}
+{"texto": "Tengo cambios de animo muy extremos y necesito seguimiento", "especialidad_esperada": "PSIQUIATRIA"}
+{"texto": "Necesito control de mi medicacion psiquiatrica", "especialidad_esperada": "PSIQUIATRIA"}
+{"texto": "Me duele mucho el oido y lo siento tapado", "especialidad_esperada": "OTORRINOLARINGOLOGIA"}
+{"texto": "Tengo la nariz tapada siempre y sinusitis", "especialidad_esperada": "OTORRINOLARINGOLOGIA"}
+{"texto": "Veo borroso desde hace unos dias", "especialidad_esperada": "OFTALMOLOGIA"}
+{"texto": "Tengo el ojo rojo e irritado con dolor", "especialidad_esperada": "OFTALMOLOGIA"}
+{"texto": "Me arde mucho al orinar desde ayer", "especialidad_esperada": "UROLOGIA"}
+{"texto": "Tengo dolor en los rinones tipo colico", "especialidad_esperada": "UROLOGIA"}
+{"texto": "Necesito terapia despues de una cirugia de rodilla", "especialidad_esperada": "FISIOTERAPIA"}
+{"texto": "Tengo el cuerpo muy agarrotado por mala postura en el trabajo", "especialidad_esperada": "FISIOTERAPIA"}
+{"texto": "Tuve un accidente de auto y hay heridos", "especialidad_esperada": "EMERGENCIA"}
+{"texto": "Me queme fuerte la mano con aceite caliente", "especialidad_esperada": "EMERGENCIA"}

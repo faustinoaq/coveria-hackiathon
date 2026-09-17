@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { aplicarGuardaMontos, FRASE_SIN_CIFRAS } from "../lib/guarda-montos";
+import {
+  aplicarGuardaMontos,
+  extraerNumerosEnPalabras,
+  FRASE_SIN_CIFRAS,
+} from "../lib/guarda-montos";
 import type { CotizacionOk } from "../lib/herramientas/cotizar";
 
 const cotizacion: CotizacionOk = {
@@ -58,5 +62,29 @@ describe("aplicarGuardaMontos", () => {
   it("deja pasar numeros de 1-2 digitos que no son montos (p. ej. porcentajes)", () => {
     const texto = "La cobertura es del 70 por ciento.";
     expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
+  });
+
+  it("reemplaza el texto si el modelo deletrea el centavo crudo en palabras (bug reportado)", () => {
+    const texto = "El pago del paciente es cuatro mil doscientos y el de la aseguradora es cuatro mil ochocientos.";
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(FRASE_SIN_CIFRAS);
+  });
+
+  it("deja pasar conteos chicos deletreados que no son montos", () => {
+    const texto = "Hay tres hospitales en la red y la cobertura es del setenta por ciento.";
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
+  });
+});
+
+describe("extraerNumerosEnPalabras", () => {
+  it("interpreta numeros compuestos en espanol", () => {
+    expect(extraerNumerosEnPalabras("veintitres mil")).toEqual([23000]);
+    expect(extraerNumerosEnPalabras("seis mil novecientos cincuenta")).toEqual([6950]);
+    expect(extraerNumerosEnPalabras("dos mil quinientos")).toEqual([2500]);
+    expect(extraerNumerosEnPalabras("mil")).toEqual([1000]);
+    expect(extraerNumerosEnPalabras("cien")).toEqual([100]);
+  });
+
+  it("ignora texto sin numeros", () => {
+    expect(extraerNumerosEnPalabras("hola, como estas hoy")).toEqual([]);
   });
 });

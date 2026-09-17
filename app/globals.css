@@ -30,6 +30,23 @@ body {
   font-feature-settings: "tnum" 1;
 }
 
+@keyframes anillo-latido {
+  0%,
+  100% {
+    opacity: 0.35;
+    r: 14;
+  }
+  50% {
+    opacity: 0.05;
+    r: 20;
+  }
+}
+
+.anillo-activo {
+  animation: anillo-latido 1.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

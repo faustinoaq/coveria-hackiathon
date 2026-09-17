@@ -31,6 +31,7 @@ export interface EventoHerramienta {
 
 export interface ContextoAgente {
   cotizaciones: CotizacionOk[];
+  onInicio: (nombre: EventoHerramienta["nombre"]) => void;
   onEvento: (evento: EventoHerramienta) => void;
 }
 
@@ -46,6 +47,7 @@ export function construirHerramientas(contexto: ContextoAgente) {
         .describe("Numero de poliza en formato POL-AAAA-NNNN, tal como lo da el paciente"),
     }),
     execute: async ({ numero_poliza }) => {
+      contexto.onInicio("buscar_poliza");
       const inicio = Date.now();
       const resultado = await buscarPoliza(numero_poliza);
       contexto.onEvento({
@@ -69,6 +71,7 @@ export function construirHerramientas(contexto: ContextoAgente) {
       texto: z.string().describe("Descripcion del sintoma en las palabras del paciente"),
     }),
     execute: async ({ texto }) => {
+      contexto.onInicio("buscar_sintomas");
       const inicio = Date.now();
       intentosSintomas += 1;
 
@@ -97,6 +100,7 @@ export function construirHerramientas(contexto: ContextoAgente) {
       "Calcula el copago exacto y compara hasta 3 hospitales de la red para una especialidad ya validada. La poliza debe existir y la especialidad debe venir de buscar_sintomas.",
     inputSchema: cotizarInputSchema,
     execute: async (input) => {
+      contexto.onInicio("cotizar");
       const inicio = Date.now();
       const resultado = await cotizar(input);
       if (resultado.ok) contexto.cotizaciones.push(resultado);

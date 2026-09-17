@@ -104,17 +104,22 @@ export async function POST(request: Request) {
       }
 
       const cotizaciones: CotizacionOk[] = [];
-      let pasoSeq = 0;
       const herramientas = construirHerramientas({
         cotizaciones,
-        onEvento: (evento) => {
-          pasoSeq += 1;
+        onInicio: (nombre) => {
           writer.write({
             type: "data-paso",
-            id: `paso-${pasoSeq}`,
+            id: `paso-${nombre}`,
+            data: { nombre, estado: "activo" },
+          });
+        },
+        onEvento: (evento) => {
+          writer.write({
+            type: "data-paso",
+            id: `paso-${evento.nombre}`,
             data: {
               nombre: evento.nombre,
-              ok: evento.ok,
+              estado: evento.ok ? "hecho" : "error",
               ms: evento.ms,
               resumen: evento.resumen,
               entrada: evento.entrada,

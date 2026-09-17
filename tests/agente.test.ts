@@ -6,6 +6,7 @@ describe("construirHerramientas: buscar_sintomas, limite de intentos", () => {
     const eventos: unknown[] = [];
     const herramientas = construirHerramientas({
       cotizaciones: [],
+      onInicio: () => {},
       onEvento: (e) => eventos.push(e),
     });
 
@@ -26,7 +27,7 @@ describe("construirHerramientas: buscar_sintomas, limite de intentos", () => {
 describe("construirHerramientas: cotizar acumula en contexto.cotizaciones", () => {
   it("agrega la cotizacion exitosa al arreglo compartido", async () => {
     const cotizaciones: unknown[] = [];
-    const herramientas = construirHerramientas({ cotizaciones: cotizaciones as never, onEvento: () => {} });
+    const herramientas = construirHerramientas({ cotizaciones: cotizaciones as never, onInicio: () => {}, onEvento: () => {} });
     const opciones = { toolCallId: "t", messages: [], abortSignal: undefined } as never;
 
     await herramientas.cotizar.execute!(

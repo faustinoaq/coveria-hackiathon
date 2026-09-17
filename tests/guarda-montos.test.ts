@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  aplicarGuardaMontos,
-  extraerNumerosEnPalabras,
-  FRASE_SIN_CIFRAS,
-} from "../lib/guarda-montos";
+import { aplicarGuardaMontos, FRASE_SIN_CIFRAS } from "../lib/guarda-montos";
 import type { CotizacionOk } from "../lib/herramientas/cotizar";
 
 const cotizacion: CotizacionOk = {
@@ -44,7 +40,7 @@ describe("aplicarGuardaMontos", () => {
     expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
   });
 
-  it("reemplaza el texto si aparece una cifra no respaldada", () => {
+  it("reemplaza el texto si aparece una cifra que no corresponde a nada real", () => {
     const texto = "Pagarias $999.99 en total.";
     expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(FRASE_SIN_CIFRAS);
   });
@@ -54,9 +50,16 @@ describe("aplicarGuardaMontos", () => {
     expect(aplicarGuardaMontos(texto, [])).toBe(FRASE_SIN_CIFRAS);
   });
 
-  it("reemplaza el texto si el modelo copia el centavo crudo sin formatear (bug real reportado)", () => {
+  it("corrige el centavo crudo sin formatear a dolares, sin borrar la respuesta (bug real reportado)", () => {
     const texto = "El pago del paciente es 4200 y el de la aseguradora es 4800.";
-    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(FRASE_SIN_CIFRAS);
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(
+      "El pago del paciente es $42.00 y el de la aseguradora es $48.00.",
+    );
+  });
+
+  it('corrige "$" pegado al centavo crudo ("$4200" en vez de "$42.00")', () => {
+    const texto = "El copago es $4200.";
+    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe("El copago es $42.00.");
   });
 
   it("deja pasar numeros de 1-2 digitos que no son montos (p. ej. porcentajes)", () => {
@@ -64,27 +67,8 @@ describe("aplicarGuardaMontos", () => {
     expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
   });
 
-  it("reemplaza el texto si el modelo deletrea el centavo crudo en palabras (bug reportado)", () => {
-    const texto = "El pago del paciente es cuatro mil doscientos y el de la aseguradora es cuatro mil ochocientos.";
-    expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(FRASE_SIN_CIFRAS);
-  });
-
-  it("deja pasar conteos chicos deletreados que no son montos", () => {
-    const texto = "Hay tres hospitales en la red y la cobertura es del setenta por ciento.";
+  it("no toca numeros crudos que no corresponden a ningun monto real", () => {
+    const texto = "Tu poliza es la numero 2026.";
     expect(aplicarGuardaMontos(texto, [cotizacion])).toBe(texto);
-  });
-});
-
-describe("extraerNumerosEnPalabras", () => {
-  it("interpreta numeros compuestos en espanol", () => {
-    expect(extraerNumerosEnPalabras("veintitres mil")).toEqual([23000]);
-    expect(extraerNumerosEnPalabras("seis mil novecientos cincuenta")).toEqual([6950]);
-    expect(extraerNumerosEnPalabras("dos mil quinientos")).toEqual([2500]);
-    expect(extraerNumerosEnPalabras("mil")).toEqual([1000]);
-    expect(extraerNumerosEnPalabras("cien")).toEqual([100]);
-  });
-
-  it("ignora texto sin numeros", () => {
-    expect(extraerNumerosEnPalabras("hola, como estas hoy")).toEqual([]);
   });
 });

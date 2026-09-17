@@ -6,7 +6,7 @@
 | 1 | hecha | 2026-09-17 | Scaffold Next.js 16.3.5 + TypeScript + Tailwind v4. Build OK. Repo publico: https://github.com/faustinoaq/coveria-hackiathon |
 | 2 | hecha | 2026-09-17 | Proyecto Vercel `coveria-hackiathon` vinculado (cuenta faustinoaq1), repo de GitHub conectado. Neon Postgres provisionado (plan free_v3, region iad1) sin bloqueo de terminos. `DATABASE_URL` confirmada en produccion y development. Secretos generados (SESSION_SECRET, ADMIN_PASSWORD_HASH via scrypt) y cargados por stdin. `MCP_TOKEN` generado para la fase 10. |
 | 3 | hecha | 2026-09-17 | `db/schema.sql` aplicado y `scripts/seed.ts` ejecutado: 15 hospitales, 45 coberturas, 150 tarifas, 60 polizas (incluyendo las 5 reservadas), 74 sintomas. Test de consistencia de catalogo OK (cada especialidad de sintomas tiene cobertura en los 3 planes y >=2 hospitales en red). |
-| 4 | pendiente | | |
+| 4 | hecha | 2026-09-17 | `lib/pago.ts` (calculo en centavos, redondeo half-up solo en paciente). 9 casos de B.8 + prueba de propiedades (500 combinaciones aleatorias) OK. `lib/formato.ts` y `lib/errores.ts` agregados. 18 tests pasando en total. |
 | 5 | pendiente | | |
 | 6 | pendiente | | |
 | 7 | pendiente | | |

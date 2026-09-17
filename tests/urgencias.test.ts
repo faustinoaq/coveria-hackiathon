@@ -15,6 +15,17 @@ describe("detectarUrgencia: frases positivas", () => {
     ["Tengo pensamientos de hacerme dano", "crisis"],
     ["Ya no quiero seguir viviendo", "crisis"],
     ["Siento ganas de morirme", "crisis"],
+    // El agente ahora responde en el idioma del paciente; la capa 1 de
+    // seguridad debe seguir detectando estas frases en ingles.
+    ["I have severe chest pain radiating to my arm", "urgente"],
+    ["I can't breathe", "urgente"],
+    ["She fainted and passed out", "urgente"],
+    ["He has heavy bleeding from his leg", "urgente"],
+    ["Her face is drooping and she has slurred speech", "urgente"],
+    ["He is having a seizure right now", "urgente"],
+    ["I want to kill myself", "crisis"],
+    ["I don't want to live anymore", "crisis"],
+    ["I have thoughts of hurting myself", "crisis"],
   ];
 
   for (const [texto, esperado] of casos) {
@@ -32,6 +43,9 @@ describe("detectarUrgencia: frases negativas", () => {
     "Me duele un poco el pecho del gimnasio de ayer",
     "Tengo picazon en la piel desde hace dias",
     "Necesito control prenatal",
+    "I have a back pain",
+    "I have a mild headache since this morning",
+    "My knee hurts, policy POL-2026-0001",
   ];
 
   for (const texto of casos) {

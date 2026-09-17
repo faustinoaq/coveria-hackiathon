@@ -103,10 +103,19 @@ export async function POST(request: Request) {
         await registrar("urgencia", "capa1", "crisis", 0, "pensamientos de hacerse dano");
         const lineaCrisis = process.env.CRISIS_LINE ?? "169";
         const emergencia = process.env.EMERGENCY_NUMBER ?? "911";
+        // Este mensaje no pasa por el LLM (a proposito: no debe depender de
+        // que el modelo responda a tiempo ni de que detecte bien el idioma
+        // en un momento critico). Como no hay deteccion de idioma aqui, se
+        // muestra en espanol e ingles siempre, para que la informacion de
+        // seguridad llegue sin importar en que idioma este comodo el
+        // paciente.
         const texto =
           `Percibo que estas pasando por un momento muy dificil y quiero que estes seguro. ` +
           `Por favor comunicate ahora con la Linea de Crisis ${lineaCrisis} o acude a una sala de emergencias (${emergencia}). ` +
-          `No estas solo, hay personas listas para ayudarte. ` +
+          `No estas solo, hay personas listas para ayudarte.\n\n` +
+          `It sounds like you're going through something very difficult right now, and I want you to be safe. ` +
+          `Please contact the Crisis Line ${lineaCrisis} now, or go to an emergency room (${emergencia}). ` +
+          `You are not alone, there are people ready to help you.\n\n` +
           `Esta informacion es una estimacion referencial. La validacion final de cobertura y beneficios corresponde a la aseguradora.`;
         writer.write({ type: "text-start", id: "t1" });
         writer.write({ type: "text-delta", id: "t1", delta: texto });

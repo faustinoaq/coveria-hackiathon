@@ -3,8 +3,8 @@
 | Fase | Estado | Fecha | Nota |
 |------|--------|-------|------|
 | 0 | hecha | 2026-09-17 | Preflight OK. Node v24.6.0, npm 11.5.1, git 2.43.0. Owner GitHub: faustinoaq. Cuenta Vercel: faustinoaq1. Modelo LLM verificado: gpt-5-nano (proveedor openai). |
-| 1 | en progreso | 2026-09-17 | Scaffold Next.js 16.3.5 + TypeScript + Tailwind v4 creado con create-next-app. |
-| 2 | pendiente | | |
+| 1 | hecha | 2026-09-17 | Scaffold Next.js 16.3.5 + TypeScript + Tailwind v4. Build OK. Repo publico: https://github.com/faustinoaq/coveria-hackiathon |
+| 2 | hecha | 2026-09-17 | Proyecto Vercel `coveria-hackiathon` vinculado (cuenta faustinoaq1), repo de GitHub conectado. Neon Postgres provisionado (plan free_v3, region iad1) sin bloqueo de terminos. `DATABASE_URL` confirmada en produccion y development. Secretos generados (SESSION_SECRET, ADMIN_PASSWORD_HASH via scrypt) y cargados por stdin. `MCP_TOKEN` generado para la fase 10. |
 | 3 | pendiente | | |
 | 4 | pendiente | | |
 | 5 | pendiente | | |

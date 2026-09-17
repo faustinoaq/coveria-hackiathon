@@ -7,7 +7,7 @@
 | 2 | hecha | 2026-09-17 | Proyecto Vercel `coveria-hackiathon` vinculado (cuenta faustinoaq1), repo de GitHub conectado. Neon Postgres provisionado (plan free_v3, region iad1) sin bloqueo de terminos. `DATABASE_URL` confirmada en produccion y development. Secretos generados (SESSION_SECRET, ADMIN_PASSWORD_HASH via scrypt) y cargados por stdin. `MCP_TOKEN` generado para la fase 10. |
 | 3 | hecha | 2026-09-17 | `db/schema.sql` aplicado y `scripts/seed.ts` ejecutado: 15 hospitales, 45 coberturas, 150 tarifas, 60 polizas (incluyendo las 5 reservadas), 74 sintomas. Test de consistencia de catalogo OK (cada especialidad de sintomas tiene cobertura en los 3 planes y >=2 hospitales en red). |
 | 4 | hecha | 2026-09-17 | `lib/pago.ts` (calculo en centavos, redondeo half-up solo en paciente). 9 casos de B.8 + prueba de propiedades (500 combinaciones aleatorias) OK. `lib/formato.ts` y `lib/errores.ts` agregados. 18 tests pasando en total. |
-| 5 | pendiente | | |
+| 5 | hecha | 2026-09-17 | Login con scrypt+JWT (`lib/auth.ts`), `proxy.ts`, rutas `/api/auth/login` y `/api/auth/logout`, pagina `/login`. Bloqueo por fuerza bruta (5 intentos/15min) via `lib/limites.ts` y `rate_limits`. Probado manualmente end-to-end con `next dev`: login correcto/incorrecto, cookie de sesion, `/` protegida, `/api/chat` 401 sin cookie. 25 tests OK. |
 | 6 | pendiente | | |
 | 7 | pendiente | | |
 | 8 | pendiente | | |
@@ -24,3 +24,5 @@
 - `util.promisify(crypto.scrypt)` no tipa bien la sobrecarga con `options`; se cambio a `crypto.scryptSync` en `lib/auth.ts` (mismo resultado, sin el problema de tipos).
 - Bug conocido de npm con dependencias opcionales (rolldown/vitest) causo `Cannot find native binding`; se resolvio borrando `node_modules`/`package-lock.json` y reinstalando.
 - Seed genero 74 sintomas (el spec sugiere "~80"); es una aproximacion razonable, todas las 15 especialidades quedan cubiertas.
+- **Importante**: el spec sugiere el formato `scrypt$N$r$p$sal$hash` para `ADMIN_PASSWORD_HASH`. El loader de env de Next.js (`@next/env`, usa `dotenv-expand`) interpola `$nombre` dentro de archivos `.env*` locales (`next dev`/`next build`), lo que corrompia el hash porque `$16384`, `$8`, `$1` y el salt en base64 se interpretaban como referencias a variables inexistentes y se reemplazaban por cadena vacia. Esto NO afecta produccion en Vercel (las variables llegan directo a `process.env`, no se leen desde archivo), pero rompe el login en desarrollo local. Se cambio el formato a `scrypt:N:r:p:sal:hash` con base64url (sin `$`) para eliminar el problema de raiz.
+- `proxy.ts`: el `matcher` de `proxyConfig` no excluyo `/login` de forma confiable en `next dev` (Turbopack), causando un bucle de redireccion. Se agrego una lista `PUBLICO` verificada dentro de la propia funcion `proxy()` como defensa adicional, sin depender solo del matcher.

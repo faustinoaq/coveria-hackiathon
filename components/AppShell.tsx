@@ -16,6 +16,24 @@ import { Pasos } from "./Pasos";
 import { Estimacion, EstimacionMini } from "./Estimacion";
 import { Historial } from "./Historial";
 
+/**
+ * El transporte del AI SDK guarda el cuerpo de la respuesta HTTP fallida en
+ * `error.message` (ver createUIApiCallError en ai/dist/index.js); nuestras
+ * rutas siempre devuelven JSON `{ ok:false, codigo, mensaje }`, asi que se
+ * puede mostrar un mensaje especifico (p. ej. limite de consultas) en vez
+ * del generico "algo salio mal".
+ */
+function mensajeError(error: Error | undefined): string | null {
+  if (!error) return null;
+  try {
+    const cuerpo = JSON.parse(error.message) as { mensaje?: string };
+    if (cuerpo?.mensaje) return cuerpo.mensaje;
+  } catch {
+    // no era JSON: error de red, timeout, etc.
+  }
+  return "Algo salio mal. Intenta de nuevo en unos segundos.";
+}
+
 const CHIPS = [
   "Me duele la rodilla",
   "Tengo fiebre y tos en Colon, POL-2026-0002",
@@ -339,7 +357,7 @@ export function AppShell({
             )}
             {error && (
               <p role="alert" className="text-xs text-urgencia font-bold">
-                Algo salio mal. Intenta de nuevo.
+                {mensajeError(error)}
               </p>
             )}
           </div>

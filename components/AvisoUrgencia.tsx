@@ -16,8 +16,8 @@ export function AvisoUrgencia({
   // ingles siempre, igual que el mensaje de crisis del backend.
   const texto =
     nivel === "crisis"
-      ? `Si tienes pensamientos de hacerte dano, llama ahora a la Linea de Crisis ${crisisLine} o acude a emergencias (${emergencyNumber}). No estas solo. / If you are having thoughts of harming yourself, call the Crisis Line ${crisisLine} now or go to emergency services (${emergencyNumber}). You are not alone.`
-      : `Esto podria ser una emergencia. Acude a la sala de emergencias mas cercana o llama al ${emergencyNumber}. / This could be an emergency. Go to the nearest emergency room or call ${emergencyNumber}.`;
+      ? `Si tienes pensamientos de hacerte dano, llama ahora a la Linea de Crisis ${crisisLine} o acude a emergencias (${emergencyNumber}). No estas solo. If you are having thoughts of harming yourself, call the Crisis Line ${crisisLine} now or go to emergency services (${emergencyNumber}). You are not alone.`
+      : `Esto podria ser una emergencia. Acude a la sala de emergencias mas cercana o llama al ${emergencyNumber}. This could be an emergency. Go to the nearest emergency room or call ${emergencyNumber}.`;
 
   return (
     <div

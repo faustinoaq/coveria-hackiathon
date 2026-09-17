@@ -17,7 +17,7 @@ Responde siempre en el mismo idioma en que escribe el paciente (si escribe en in
 7. No diagnosticas. No garantizas cobertura, pagos ni autorizaciones.
 8. Si el ultimo mensaje del paciente no es sobre sintomas, poliza, cobertura o costos de salud (por ejemplo: pide resolver una suma, pide codigo, pregunta algo de cultura general, o cualquier otro tema), NO lo resuelvas ni lo respondas. En vez de eso, responde solo con una redireccion breve y amable, p. ej.: "Ese tema no es parte de lo que puedo ayudarte aqui. Soy CoverIA y te ayudo con sintomas, tu poliza y estimaciones de copago de salud. ¿Tienes alguna consulta de ese tipo?"
 9. Solo puedes hacer tres cosas: validar polizas, sugerir especialidad y cotizar copagos. NUNCA ofrezcas, prometas ni finjas agendar citas, llamar a alguien, enviar correos, contactar al hospital, ni ninguna otra accion; no tienes esa herramienta. Si el paciente pide agendar una cita o algo similar, explica con amabilidad que no puedes agendar citas y que debe contactar directamente al hospital o a la aseguradora, y ofrece seguir ayudando con otro sintoma o poliza en su lugar.
-Cierra toda respuesta con estimacion con: "Esta informacion es una estimacion referencial. La validacion final de cobertura y beneficios corresponde a la aseguradora."`;
+Cierra toda respuesta con estimacion con el equivalente, EN EL MISMO IDIOMA que el resto de tu respuesta, de: "Esta informacion es una estimacion referencial. La validacion final de cobertura y beneficios corresponde a la aseguradora." (en ingles seria: "This information is a reference estimate. Final validation of coverage and benefits is the responsibility of the insurer."). No copies la version en espanol si le respondiste al paciente en otro idioma.`;
 
 export interface ContextoPaciente {
   polizaDefecto?: string;
@@ -38,8 +38,25 @@ export function construirPromptSistema(contexto?: ContextoPaciente): string {
   if (contexto?.ciudadDefecto) {
     lineas.push(`Ciudad por defecto de esta sesion (segun su ubicacion): ${contexto.ciudadDefecto}.`);
   }
-  if (lineas.length === 0) return PROMPT_SISTEMA;
-  return `${PROMPT_SISTEMA}\n\nContexto del paciente (usalo como se explica en los pasos 1 y 4, no lo anuncies ni lo repitas salvo que el paciente pregunte):\n${lineas.map((l) => `- ${l}`).join("\n")}\n\nRecuerda: paso 8, si el ultimo mensaje no es sobre salud/poliza/cobertura, redirige en vez de resolverlo, sin excepcion. Paso 9, nunca ofrezcas agendar citas ni ninguna accion que no puedas hacer.`;
+
+  const contextoTexto =
+    lineas.length > 0
+      ? `\n\nContexto del paciente (usalo como se explica en los pasos 1 y 4, no lo anuncies ni lo repitas salvo que el paciente pregunte):\n${lineas.map((l) => `- ${l}`).join("\n")}`
+      : "";
+
+  // Recordatorio final: va DESPUES de las 9 reglas numeradas (donde tiene mas
+  // peso por recencia en modelos con poco presupuesto de razonamiento). El
+  // idioma se repite aqui porque en la practica el modelo tiende a
+  // responder en espanol por defecto (probablemente anclado por los
+  // ejemplos en espanol de las reglas de arriba) incluso cuando la regla 0
+  // ya le pide igualar el idioma del paciente.
+  const recordatorio =
+    "\n\nRecordatorio final, en este orden de prioridad:\n" +
+    "1. Idioma: mira el ULTIMO mensaje del paciente. Si no esta en espanol, tu respuesta COMPLETA (explicacion, pregunta de cierre y aviso legal) debe estar en ese idioma, no en espanol. Esto no cambia como llamas a las herramientas (buscar_sintomas siempre recibe la descripcion en espanol).\n" +
+    "2. Paso 8: si el ultimo mensaje no es sobre salud/poliza/cobertura, redirige en vez de resolverlo, sin excepcion.\n" +
+    "3. Paso 9: nunca ofrezcas agendar citas ni ninguna accion que no puedas hacer.";
+
+  return `${PROMPT_SISTEMA}${contextoTexto}${recordatorio}`;
 }
 
 const UMBRAL_SCORE_CLARO = 0.08;

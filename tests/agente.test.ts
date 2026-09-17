@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import { construirHerramientas, construirPromptSistema, PROMPT_SISTEMA } from "../lib/agente";
 
 describe("construirPromptSistema: poliza/ciudad por defecto", () => {
-  it("devuelve el prompt base sin contexto", () => {
-    expect(construirPromptSistema()).toBe(PROMPT_SISTEMA);
-    expect(construirPromptSistema({})).toBe(PROMPT_SISTEMA);
+  it("sin contexto, agrega solo el recordatorio final (no lineas de poliza/ciudad)", () => {
+    for (const prompt of [construirPromptSistema(), construirPromptSistema({})]) {
+      expect(prompt.startsWith(PROMPT_SISTEMA)).toBe(true);
+      expect(prompt).not.toContain("Contexto del paciente");
+      expect(prompt).toContain("Recordatorio final");
+    }
   });
 
   it("agrega la poliza y ciudad por defecto cuando se proveen", () => {

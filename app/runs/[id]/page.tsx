@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { obtenerRun } from "@/lib/eventos";
 import { Recorrido } from "@/components/Recorrido";
@@ -44,6 +45,13 @@ export default async function RunPage({
 
   return (
     <main className="flex-1 p-4 md:p-8 flex flex-col gap-4 max-w-3xl mx-auto w-full overflow-y-auto">
+      <Link
+        href="/"
+        className="self-start flex items-center gap-1.5 text-xs font-bold text-tinta bg-superficie border border-tinta/15 rounded-full pl-2.5 pr-3.5 py-1.5 shadow-tarjeta transition-colors hover:bg-sala focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente focus-visible:ring-offset-2"
+      >
+        <span aria-hidden className="text-sm leading-none">←</span>
+        Volver
+      </Link>
       <div>
         <p className="text-xs font-bold tracking-wide uppercase text-tinta/45 mb-1">
           Detalle de la consulta
@@ -81,7 +89,7 @@ export default async function RunPage({
             </h3>
             <Recorrido pasos={pasos} />
           </div>
-          <Pasos pasos={pasos} verDetalles />
+          <Pasos pasos={pasos} />
         </div>
       </details>
     </main>

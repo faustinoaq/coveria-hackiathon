@@ -9,6 +9,7 @@ import type { CoverIAUIMessage, DatosPaso, DatosUrgencia } from "@/lib/chat-tipo
 import type { CotizacionOk } from "@/lib/herramientas/cotizar";
 import { ciudadMasCercana } from "@/lib/geo";
 import { agregarHistorial, listarHistorial, type ConsultaHistorial } from "@/lib/historial-local";
+import { guardarBorrador, guardarChat, leerBorrador, leerChatGuardado } from "@/lib/sesion-local";
 import { Logo } from "./Logo";
 import { AvisoUrgencia } from "./AvisoUrgencia";
 import { Recorrido } from "./Recorrido";
@@ -53,7 +54,6 @@ export function AppShell({
   crisisLine: string;
 }) {
   const router = useRouter();
-  const [verDetalles, setVerDetalles] = useState(false);
   const [tab, setTab] = useState<"conversacion" | "recorrido">("conversacion");
   const [input, setInput] = useState("");
   const [polizaDefecto, setPolizaDefecto] = useState<PolizaDefecto | null>(null);
@@ -161,6 +161,31 @@ export function AppShell({
     };
   }, []);
 
+  // Restaura el borrador de "Describe tu sintoma" y la sesion de chat
+  // guardados en localStorage (nunca en el servidor). Se difiere a un
+  // microtask porque setInput/setMessages son setState llamados desde el
+  // cuerpo del efecto, mismo patron usado para el historial.
+  useEffect(() => {
+    let cancelado = false;
+    queueMicrotask(() => {
+      if (cancelado) return;
+      const borrador = leerBorrador();
+      if (borrador) setInput(borrador);
+      const chatGuardado = leerChatGuardado();
+      if (chatGuardado.length > 0) setMessages(chatGuardado);
+    });
+    return () => {
+      cancelado = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persiste la sesion de chat en cada cambio: no es setState (es escribir a
+  // localStorage), asi que no aplica react-hooks/set-state-in-effect.
+  useEffect(() => {
+    guardarChat(messages);
+  }, [messages]);
+
   useEffect(() => {
     const runId = urgencia?.runId;
     const principal = estimacion?.ok ? estimacion.hospitales[0] : undefined;
@@ -202,6 +227,7 @@ export function AppShell({
       },
     );
     setInput("");
+    guardarBorrador("");
   }
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -217,15 +243,6 @@ export function AppShell({
           <h1 className="text-lg font-bold tracking-tight">CoverIA</h1>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <label className="flex items-center gap-2 text-tinta/70">
-            <input
-              type="checkbox"
-              checked={verDetalles}
-              onChange={(e) => setVerDetalles(e.target.checked)}
-              className="accent-linea-agente"
-            />
-            Ver detalles tecnicos
-          </label>
           <button
             type="button"
             onClick={cerrarSesion}
@@ -368,7 +385,10 @@ export function AppShell({
             <input
               id="mensaje"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                guardarBorrador(e.target.value);
+              }}
               placeholder="Describe tu sintoma"
               className="flex-1 border border-tinta/15 bg-superficie rounded-xl px-3.5 py-2.5 transition-shadow focus:outline-none focus:ring-2 focus:ring-linea-agente focus:ring-offset-2 focus:ring-offset-sala disabled:opacity-60"
               disabled={status !== "ready"}
@@ -416,7 +436,7 @@ export function AppShell({
             </h2>
             <Recorrido pasos={pasos} />
           </div>
-          <Pasos pasos={pasos} verDetalles={verDetalles} />
+          <Pasos pasos={pasos} />
           <Historial items={historial} />
         </section>
       </div>

@@ -14,14 +14,10 @@ const COLORES: Record<DatosPaso["nombre"], string> = {
   cotizar: "var(--color-linea-red)",
 };
 
-export function Pasos({
-  pasos,
-  verDetalles,
-}: {
-  pasos: DatosPaso[];
-  verDetalles: boolean;
-}) {
+export function Pasos({ pasos }: { pasos: DatosPaso[] }) {
   if (pasos.length === 0) return null;
+
+  const conDetalle = pasos.filter((p) => p.estado !== "activo");
 
   return (
     <section aria-label="Pasos de la consulta" className="tarjeta flex flex-col gap-3 p-4">
@@ -54,15 +50,27 @@ export function Pasos({
                   </span>
                 )}
               </div>
-              {verDetalles && paso.estado !== "activo" && (
-                <pre className="mt-1.5 ml-3.5 bg-sala rounded-lg p-2.5 text-xs overflow-x-auto">
-                  {JSON.stringify({ entrada: paso.entrada, salida: paso.salida }, null, 2)}
-                </pre>
-              )}
             </li>
           );
         })}
       </ol>
+      {conDetalle.length > 0 && (
+        <details className="pt-1 -mb-1">
+          <summary className="text-xs font-bold uppercase tracking-wide text-tinta/45 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente rounded">
+            Datos tecnicos
+          </summary>
+          <div className="flex flex-col gap-2 mt-2">
+            {conDetalle.map((paso, i) => (
+              <div key={i}>
+                <p className="text-xs font-bold text-tinta/50 mb-1">{ETIQUETAS[paso.nombre]}</p>
+                <pre className="bg-sala rounded-lg p-2.5 text-xs overflow-x-auto">
+                  {JSON.stringify({ entrada: paso.entrada, salida: paso.salida }, null, 2)}
+                </pre>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
     </section>
   );
 }

@@ -7,15 +7,38 @@ import { error } from "./errores";
 
 export const PROMPT_SISTEMA = `Eres CoverIA, asistente de beneficios de salud de Aseguradora Istmo Demo en Panama.
 Hablas en espanol claro, amable y breve.
-1. Consigue el sintoma y el numero de poliza.
+1. Consigue el sintoma y el numero de poliza. Si el contexto del paciente trae una poliza por defecto y el paciente no dio la suya propia en el mensaje, usa la poliza por defecto sin preguntarla.
 2. Valida la poliza con buscar_poliza.
 3. Usa buscar_sintomas y elige una especialidad solo de los candidatos. Si no hay una clara, haz una pregunta concreta.
-4. Llama cotizar con la poliza y la especialidad.
+4. Llama cotizar con la poliza y la especialidad. Si tienes una ciudad (la que el paciente menciono, o si no menciono ninguna la ciudad por defecto del contexto), pasala tambien como "ciudad".
 5. Explica el resultado en 2 a 4 frases. No escribas cifras; la pantalla las muestra.
 6. Si una herramienta devuelve error, explica que paso, que puede hacer el paciente y el codigo.
 7. No diagnosticas. No garantizas cobertura, pagos ni autorizaciones.
 8. Si la consulta no es sobre beneficios de salud, redirige con amabilidad.
 Cierra toda respuesta con estimacion con: "Esta informacion es una estimacion referencial. La validacion final de cobertura y beneficios corresponde a la aseguradora."`;
+
+export interface ContextoPaciente {
+  polizaDefecto?: string;
+  ciudadDefecto?: string;
+}
+
+/**
+ * Agrega al prompt del sistema la poliza/ciudad por defecto de esta sesion
+ * (poliza demo asignada al azar + ciudad estimada por geolocalizacion del
+ * navegador). El paciente puede sobreescribir cualquiera de las dos con solo
+ * mencionar la suya en el mensaje; el modelo decide cual usar, no el cliente.
+ */
+export function construirPromptSistema(contexto?: ContextoPaciente): string {
+  const lineas: string[] = [];
+  if (contexto?.polizaDefecto) {
+    lineas.push(`Poliza por defecto de esta sesion: ${contexto.polizaDefecto}.`);
+  }
+  if (contexto?.ciudadDefecto) {
+    lineas.push(`Ciudad por defecto de esta sesion (segun su ubicacion): ${contexto.ciudadDefecto}.`);
+  }
+  if (lineas.length === 0) return PROMPT_SISTEMA;
+  return `${PROMPT_SISTEMA}\n\nContexto del paciente (usalo como se explica en los pasos 1 y 4, no lo anuncies ni lo repitas salvo que el paciente pregunte):\n${lineas.map((l) => `- ${l}`).join("\n")}`;
+}
 
 const UMBRAL_SCORE_CLARO = 0.08;
 const MAX_INTENTOS_SINTOMAS = 2;

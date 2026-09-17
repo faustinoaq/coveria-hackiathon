@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Logo } from "@/components/Logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,28 +40,32 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex-1 flex items-center justify-center p-8">
-      <div className="w-full max-w-sm bg-superficie rounded p-8 border-2 border-tinta/10">
-        <h1 className="text-2xl font-bold mb-2">CoverIA</h1>
-        <p className="text-sm mb-6 max-w-[70ch]">
-          Acceso para evaluadores. Usa las credenciales del correo de entrega.
+    <main className="fondo-acceso flex-1 flex items-center justify-center p-6 sm:p-8">
+      <div className="tarjeta w-full max-w-sm p-8 sm:p-10">
+        <Logo className="w-9 h-9 mb-5" />
+        <p className="text-xs font-bold tracking-wide uppercase text-tinta/50 mb-1.5">
+          Acceso para evaluadores
+        </p>
+        <h1 className="text-3xl font-bold mb-2">CoverIA</h1>
+        <p className="text-sm text-tinta/70 mb-7 max-w-[70ch]">
+          Usa las credenciales del correo de entrega.
         </p>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm font-bold">
             Usuario
             <input
-              className="border-2 border-tinta/20 rounded px-3 py-2 focus:outline focus:outline-2 focus:outline-linea-agente"
+              className="border border-tinta/15 rounded-xl px-3.5 py-2.5 font-normal transition-shadow focus:outline-none focus:ring-2 focus:ring-linea-agente focus:ring-offset-2 focus:ring-offset-superficie"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
               autoComplete="username"
               required
             />
           </label>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm font-bold">
             Contraseña
             <input
               type="password"
-              className="border-2 border-tinta/20 rounded px-3 py-2 focus:outline focus:outline-2 focus:outline-linea-agente"
+              className="border border-tinta/15 rounded-xl px-3.5 py-2.5 font-normal transition-shadow focus:outline-none focus:ring-2 focus:ring-linea-agente focus:ring-offset-2 focus:ring-offset-superficie"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
@@ -68,16 +73,17 @@ export default function LoginPage() {
             />
           </label>
           {error && (
-            <p role="alert" className="text-urgencia text-sm font-bold">
+            <p role="alert" className="flex items-center gap-2 text-urgencia text-sm font-bold">
+              <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-urgencia flex-shrink-0" />
               {error}
             </p>
           )}
           <button
             type="submit"
             disabled={enviando}
-            className="bg-linea-agente text-white rounded px-4 py-2 font-bold disabled:opacity-60"
+            className="bg-linea-agente text-white rounded-xl px-4 py-2.5 font-bold shadow-[0_10px_24px_-10px_rgba(47,111,222,0.65)] transition-all hover:bg-linea-agente-fuerte hover:shadow-[0_14px_28px_-10px_rgba(47,111,222,0.75)] active:translate-y-px disabled:opacity-60 disabled:shadow-none disabled:hover:bg-linea-agente"
           >
-            Entrar
+            {enviando ? "Entrando..." : "Entrar"}
           </button>
         </form>
       </div>

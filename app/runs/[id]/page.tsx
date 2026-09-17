@@ -38,14 +38,21 @@ export default async function RunPage({
   return (
     <main className="flex-1 p-4 md:p-8 flex flex-col gap-4 max-w-3xl mx-auto w-full">
       <div>
-        <h1 className="text-xl font-bold">Detalle de la consulta</h1>
-        <p className="text-sm text-tinta/70">
-          {fecha(new Date(run.created_at))}
-          {run.urgente && <span className="text-urgencia font-bold"> (urgencia detectada)</span>}
+        <p className="text-xs font-bold tracking-wide uppercase text-tinta/45 mb-1">
+          Detalle de la consulta
         </p>
+        <h1 className="text-2xl font-bold mb-1">{fecha(new Date(run.created_at))}</h1>
+        {run.urgente && (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-urgencia">
+            <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-urgencia" />
+            Urgencia detectada
+          </span>
+        )}
       </div>
-      <div className="bg-superficie rounded p-4 border-2 border-tinta/10">
-        <h2 className="text-sm font-bold mb-2">Recorrido</h2>
+      <div className="tarjeta p-4">
+        <h2 className="text-xs font-bold uppercase tracking-wide text-tinta/45 mb-2">
+          Recorrido
+        </h2>
         <Recorrido pasos={pasos} />
       </div>
       <Pasos pasos={pasos} verDetalles />

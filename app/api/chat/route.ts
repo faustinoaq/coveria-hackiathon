@@ -11,7 +11,7 @@ import { z } from "zod";
 import { obtenerSesion } from "@/lib/auth";
 import { error } from "@/lib/errores";
 import { detectarUrgencia } from "@/lib/urgencias";
-import { construirHerramientas, PROMPT_SISTEMA } from "@/lib/agente";
+import { construirHerramientas, construirPromptSistema } from "@/lib/agente";
 import { obtenerModelo } from "@/lib/modelo";
 import { crearRun, crearRunId, cerrarRun, registrarEvento } from "@/lib/eventos";
 import { aplicarGuardaMontos } from "@/lib/guarda-montos";
@@ -22,6 +22,12 @@ export const maxDuration = 30;
 
 const cuerpoSchema = z.object({
   messages: z.array(z.any()).min(1),
+  contexto: z
+    .object({
+      poliza_defecto: z.string().trim().min(1).optional(),
+      ciudad_defecto: z.string().trim().min(1).optional(),
+    })
+    .optional(),
 });
 
 function extraerTextoUsuario(mensajes: UIMessage[]): string {
@@ -56,6 +62,10 @@ export async function POST(request: Request) {
   const mensajes = parsed.data.messages.slice(-10) as UIMessage[];
   const textoUsuario = extraerTextoUsuario(mensajes);
   const nivelUrgencia = detectarUrgencia(textoUsuario);
+  const promptSistema = construirPromptSistema({
+    polizaDefecto: parsed.data.contexto?.poliza_defecto,
+    ciudadDefecto: parsed.data.contexto?.ciudad_defecto,
+  });
 
   const runId = crearRunId();
   const inicioRun = Date.now();
@@ -141,7 +151,7 @@ export async function POST(request: Request) {
       try {
         const resultado = streamText({
           model: obtenerModelo(),
-          system: PROMPT_SISTEMA,
+          system: promptSistema,
           messages: await convertToModelMessages(mensajes),
           tools: herramientas,
           stopWhen: isStepCount(5),

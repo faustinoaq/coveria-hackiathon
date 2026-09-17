@@ -19,9 +19,22 @@ export function AvisoUrgencia({
   return (
     <div
       role="alert"
-      className="bg-urgencia text-white px-4 py-3 flex items-center gap-3 border-b-2 border-tinta/10"
+      className="relative z-0 bg-urgencia text-white px-4 py-3.5 flex items-center gap-3 shadow-[0_10px_24px_-14px_rgba(214,40,57,0.65)]"
     >
-      <span aria-hidden className="w-3 h-3 rounded-full bg-white flex-shrink-0" />
+      <svg
+        aria-hidden
+        viewBox="0 0 20 20"
+        className="w-5 h-5 flex-shrink-0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M10 2 1 17h18L10 2Z" />
+        <path d="M10 8v4" />
+        <circle cx="10" cy="14.5" r="0.5" fill="currentColor" />
+      </svg>
       <p className="text-sm font-bold max-w-[70ch]">{texto}</p>
     </div>
   );

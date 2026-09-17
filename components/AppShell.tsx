@@ -261,7 +261,7 @@ export function AppShell({
           className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${tab === "recorrido" ? "bg-linea-agente/10 text-linea-agente-fuerte" : "text-tinta/50"}`}
           onClick={() => setTab("recorrido")}
         >
-          Recorrido
+          Detalles
         </button>
       </div>
 
@@ -377,7 +377,7 @@ export function AppShell({
 
         <section
           className={`flex flex-col min-h-0 gap-4 overflow-y-auto ${tab === "conversacion" ? "hidden md:flex" : "flex"}`}
-          aria-label="Recorrido de tu consulta"
+          aria-label="Detalles de tu consulta"
         >
           {estimacion && estimacion.ok && (
             <div className="flex flex-col gap-2">

@@ -7,7 +7,7 @@ import type { CotizacionOk } from "@/lib/herramientas/cotizar";
 /**
  * Version minima para mostrar dentro del feed del chat, como resultado de
  * herramienta: solo el numero y el hospital principal, con un enlace a la
- * tarjeta completa (panel/tab "Recorrido") en vez de repetir la tabla ahi.
+ * tarjeta completa (panel/tab "Detalles") en vez de repetir la tabla ahi.
  */
 export function EstimacionMini({
   cotizacion,
@@ -21,7 +21,9 @@ export function EstimacionMini({
 
   return (
     <div className="tarjeta flex flex-col gap-1 p-3.5">
-      <p className="text-[11px] font-bold uppercase tracking-wide text-tinta/45">Tu estimacion</p>
+      <p className="text-[11px] font-bold uppercase tracking-wide text-tinta/45">
+        Detalles de tu estimacion
+      </p>
       <p className="text-2xl font-bold tabular-nums text-linea-agente-fuerte leading-none">
         {moneda(principal.pago_paciente)}
       </p>
@@ -33,7 +35,7 @@ export function EstimacionMini({
         onClick={onVerDetalle}
         className="self-start text-xs font-bold text-linea-agente-fuerte underline decoration-linea-agente/30 underline-offset-2 mt-1 transition-colors hover:text-linea-agente-fuerte focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-linea-agente focus-visible:ring-offset-2 rounded"
       >
-        Ve a Recorrido para ver mas detalles
+        Ve a la seccion de Detalles para ver mas informacion
       </button>
     </div>
   );
@@ -45,10 +47,10 @@ export function Estimacion({ cotizacion }: { cotizacion: CotizacionOk }) {
   if (!principal) return null;
 
   return (
-    <section className="tarjeta flex flex-col gap-5 p-5 sm:p-6" aria-label="Tu estimacion">
+    <section className="tarjeta flex flex-col gap-5 p-5 sm:p-6" aria-label="Detalles de tu estimacion">
       <div>
         <p className="text-xs font-bold tracking-wide uppercase text-tinta/45 mb-1.5">
-          Tu estimacion
+          Detalles de tu estimacion
         </p>
         <p className="text-4xl sm:text-5xl font-bold tabular-nums text-linea-agente-fuerte leading-none">
           {moneda(principal.pago_paciente)}

@@ -6,7 +6,7 @@ import {
   verificarSessionToken,
   verifyPassword,
 } from "../lib/auth";
-import { verificarLimite } from "../lib/limites";
+import { estaBloqueado, limpiarLimite, registrarFallo, verificarLimite } from "../lib/limites";
 import { sql } from "../lib/db";
 
 beforeAll(() => {
@@ -72,5 +72,28 @@ describe("verificarLimite: bloqueo tras intentos fallidos", () => {
     expect(bloqueado.permitido).toBe(false);
 
     await sql`delete from rate_limits where clave = ${clave}`;
+  });
+});
+
+describe("estaBloqueado / registrarFallo / limpiarLimite: solo los fallos cuentan", () => {
+  it("no bloquea intentos exitosos repetidos (solo los fallos suman)", async () => {
+    const clave = `test-login-exitos:${Date.now()}`;
+    for (let i = 0; i < 10; i++) {
+      expect(await estaBloqueado(clave, 5)).toBe(false);
+      // un intento exitoso no registra fallo
+    }
+    await sql`delete from rate_limits where clave = ${clave}`;
+  });
+
+  it("bloquea tras 5 fallos y limpiarLimite reinicia el contador", async () => {
+    const clave = `test-login-fallos:${Date.now()}`;
+    for (let i = 0; i < 5; i++) {
+      expect(await estaBloqueado(clave, 5)).toBe(false);
+      await registrarFallo(clave, 15 * 60 * 1000);
+    }
+    expect(await estaBloqueado(clave, 5)).toBe(true);
+
+    await limpiarLimite(clave);
+    expect(await estaBloqueado(clave, 5)).toBe(false);
   });
 });

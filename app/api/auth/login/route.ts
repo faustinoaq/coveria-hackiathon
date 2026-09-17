@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { COOKIE_NAME, crearSessionToken, verifyPassword } from "@/lib/auth";
 import { error } from "@/lib/errores";
-import { obtenerIp, verificarLimite } from "@/lib/limites";
+import { estaBloqueado, limpiarLimite, obtenerIp, registrarFallo } from "@/lib/limites";
 
 const RETRASO_FALLO_MS = 300;
 const VENTANA_BLOQUEO_MS = 15 * 60 * 1000;
@@ -19,9 +19,9 @@ function esperar(ms: number) {
 export async function POST(request: Request) {
   const ip = obtenerIp(request.headers);
   const maxIntentos = Number(process.env.MAX_INTENTOS_LOGIN ?? "5") || 5;
+  const clave = `login:${ip}`;
 
-  const limite = await verificarLimite(`login:${ip}`, maxIntentos, VENTANA_BLOQUEO_MS);
-  if (!limite.permitido) {
+  if (await estaBloqueado(clave, maxIntentos)) {
     return NextResponse.json(
       error("E429", "Demasiados intentos. Intenta de nuevo en 15 minutos."),
       { status: 429 },
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   const cuerpo = await request.json().catch(() => null);
   const parsed = cuerpoSchema.safeParse(cuerpo);
   if (!parsed.success) {
+    await registrarFallo(clave, VENTANA_BLOQUEO_MS);
     await esperar(RETRASO_FALLO_MS);
     return NextResponse.json(
       error("E401", "Usuario o contraseña incorrectos."),
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
   const passwordValido = adminHash ? await verifyPassword(password, adminHash) : false;
 
   if (!usuarioValido || !passwordValido) {
+    await registrarFallo(clave, VENTANA_BLOQUEO_MS);
     await esperar(RETRASO_FALLO_MS);
     return NextResponse.json(
       error("E401", "Usuario o contraseña incorrectos."),
@@ -53,6 +55,7 @@ export async function POST(request: Request) {
     );
   }
 
+  await limpiarLimite(clave);
   const token = await crearSessionToken(usuario);
   const horas = Number(process.env.SESSION_HORAS ?? "8") || 8;
 

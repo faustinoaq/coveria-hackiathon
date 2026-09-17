@@ -24,7 +24,16 @@ export async function proxy(request: NextRequest) {
   return NextResponse.redirect(loginUrl);
 }
 
-export const proxyConfig = {
+// NOTA: a pesar de que el archivo se llama `proxy.ts` y la funcion se llama
+// `proxy` (convencion de Next.js 16), la version instalada (16.3.5) sigue
+// leyendo la configuracion del matcher desde un export llamado `config`
+// (no `proxyConfig`). Un `proxyConfig` no tiene efecto: Next.js lo ignora en
+// silencio y aplica el comportamiento por defecto (correr en todas las
+// rutas), lo que hacia que `/_next/static/*` tambien pasara por este
+// archivo y terminara redirigido a `/login`. Ver
+// node_modules/next/dist/build/analysis/get-page-static-info.js
+// (`extractExportedConstValue(ast, 'config')`).
+export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|login|api/auth|api/mcp).*)",
   ],

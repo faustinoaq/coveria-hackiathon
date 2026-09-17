@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import { Logo } from "./Logo";
 import { AvisoUrgencia } from "./AvisoUrgencia";
 import { Recorrido } from "./Recorrido";
 import { Pasos } from "./Pasos";
-import { Estimacion } from "./Estimacion";
+import { Estimacion, EstimacionMini } from "./Estimacion";
 import { Historial } from "./Historial";
 
 const CHIPS = [
@@ -41,6 +41,7 @@ export function AppShell({
   const [polizaDefecto, setPolizaDefecto] = useState<PolizaDefecto | null>(null);
   const [ciudadDefecto, setCiudadDefecto] = useState<string | null>(null);
   const [historial, setHistorial] = useState<ConsultaHistorial[]>([]);
+  const mensajesRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, setMessages, error } = useChat<CoverIAUIMessage>({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -93,6 +94,17 @@ export function AppShell({
   }, []);
 
   const ultimoMensaje = messages[messages.length - 1];
+
+  // Autoscroll: sigue el fondo del panel de mensajes cada vez que llega
+  // texto nuevo (incluido el streaming caracter a caracter mientras
+  // status === "streaming"). No es setState, es sincronizar el scrollTop
+  // del DOM con el contenido de React, por eso no aplica la regla
+  // react-hooks/set-state-in-effect usada mas abajo.
+  useEffect(() => {
+    const el = mensajesRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages, status]);
 
   const urgencia = useMemo<DatosUrgencia | null>(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -258,7 +270,7 @@ export function AppShell({
           className={`flex flex-col min-h-0 gap-3 ${tab === "recorrido" ? "hidden md:flex" : "flex"}`}
           aria-label="Conversacion"
         >
-          <div className="tarjeta flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 p-4">
+          <div ref={mensajesRef} className="tarjeta flex-1 min-h-0 overflow-y-auto flex flex-col gap-3 p-4">
             {messages.length === 0 && (
               <div className="flex flex-col gap-3">
                 <p className="text-sm text-tinta/70 max-w-[70ch]">
@@ -305,8 +317,11 @@ export function AppShell({
                     </div>
                   )}
                   {estimacionMsg && (
-                    <div className="self-start w-full max-w-[92%]">
-                      <Estimacion cotizacion={estimacionMsg.data} />
+                    <div className="self-start w-full max-w-[85%]">
+                      <EstimacionMini
+                        cotizacion={estimacionMsg.data}
+                        onVerDetalle={() => setTab("recorrido")}
+                      />
                     </div>
                   )}
                 </div>

@@ -204,6 +204,10 @@ export async function POST(request: Request) {
   return createUIMessageStreamResponse({ stream });
 }
 
+// Se usa cuando el modelo no produjo texto util (p. ej. se quedo sin pasos
+// sin resolver el sintoma); no hay una respuesta del LLM de la cual partir
+// para traducir, asi que se muestra en espanol e ingles siempre.
 const FRASE_RESPALDO =
   "No encontre una respuesta clara. Cuentame de nuevo tu sintoma y tu numero de poliza. " +
+  "I could not find a clear answer. Please tell me your symptom and your policy number again. " +
   "Esta informacion es una estimacion referencial. La validacion final de cobertura y beneficios corresponde a la aseguradora.";
